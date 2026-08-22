@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparative & Superlative Speed Matchup</title>
+    <style>
+        :root {
+            --bg-color: #121620;
+            --card-bg: #1e2433;
+            --accent-yellow: #ffca28;
+            --accent-blue: #29b6f6;
+            --accent-green: #2ed573;
+            --accent-purple: #a55eea;
+            --text-light: #ffffff;
+            --danger: #ff4757;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--accent-yellow);
+            margin: 0 0 5px 0;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            color: var(--accent-blue);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 2.2fr 1.1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1350px;
+        }
+
+        .panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .panel h2 {
+            font-size: 1.1rem;
+            color: var(--accent-yellow);
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 8px;
+            width: 100%;
+            text-align: center;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        /* Wardrobe Grid - 4 Columns */
+        .wardrobe-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .item-card {
+            background-color: #2a3245;
+            padding: 10px 4px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .item-card:hover {
+            border-color: var(--accent-blue);
+            transform: scale(1.04);
+        }
+
+        .item-card.selected-1 {
+            border-color: var(--accent-yellow);
+            background-color: #3a445e;
+            box-shadow: 0 0 10px rgba(255, 202, 40, 0.5);
+        }
+
+        .item-card.selected-2 {
+            border-color: var(--accent-green);
+            background-color: #3a445e;
+            box-shadow: 0 0 10px rgba(46, 213, 115, 0.5);
+        }
+
+        .item-card.selected-3 {
+            border-color: var(--accent-purple);
+            background-color: #3a445e;
+            box-shadow: 0 0 10px rgba(165, 94, 234, 0.5);
+        }
+
+        .item-card .icon {
+            font-size: 2.2rem;
+            display: block;
+        }
+
+        .item-card .name {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: 6px;
+            display: block;
+        }
+
+        /* Arena Panel */
+        .comparison-arena {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            margin: 12px 0;
+            background: #151a26;
+            padding: 12px 8px;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        .versus-box {
+            text-align: center;
+            width: 85px;
+        }
+
+        .versus-box .icon {
+            font-size: 2.2rem;
+        }
+
+        .versus-box .title {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .vs-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-yellow);
+        }
+
+        /* Adjectives List */
+        .adj-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .adj-badge {
+            background-color: #2a3245;
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Mode Indicator */
+        .mode-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .mode-comp {
+            background-color: var(--accent-green);
+            color: #000;
+        }
+
+        .mode-super {
+            background-color: var(--accent-purple);
+            color: #fff;
+        }
+
+        /* Formula Banner */
+        .feedback-banner {
+            grid-column: 1 / -1;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            border-left: 6px solid var(--accent-yellow);
+            margin-top: 10px;
+        }
+
+        .speaking-prompt {
+            font-size: 1.25rem;
+            color: var(--accent-yellow);
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .blank-space {
+            color: var(--accent-blue);
+            text-decoration: underline;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--danger);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>⚡ Comparative & Superlative Speed Matchup</h1>
+        <p class="subtitle">Select 2 items for COMPARATIVES | Select 3 items for SUPERLATIVES!</p>
+        <p class="subtitle">By Cesar Peña, English Instructor</p>
+    </header>
+
+    <div class="main-container">    
+        
+        <!-- PANEL 1: WARDROBE GRID -->
+        <div class="panel">
+            <h2>1. Select 2 or 3 Items</h2>
+            <div class="wardrobe-grid" id="wardrobe-container">
+                <!-- Javascript will populate 12 cards -->
+            </div>
+        </div>
+
+        <!-- PANEL 2: MATCHUP ARENA & BASE ADJECTIVES -->
+        <div class="panel">
+            <h2>2. Matchup & Base Adjectives</h2>
+            
+            <div id="mode-indicator">
+                <span class="mode-badge" style="background:#444; color:#aaa;">Waiting for selection</span>
+            </div>
+
+            <div class="comparison-arena">
+                <div class="versus-box" id="box-1">
+                    <span class="icon">❓</span>
+                    <span class="title">Item 1</span>
+                </div>
+                <span class="vs-text">VS</span>
+                <div class="versus-box" id="box-2">
+                    <span class="icon">❓</span>
+                    <span class="title">Item 2</span>
+                </div>
+                <span class="vs-text" id="vs-2-text" style="display:none;">VS</span>
+                <div class="versus-box" id="box-3" style="display:none;">
+                    <span class="icon">❓</span>
+                    <span class="title">Item 3</span>
+                </div>
+            </div>
+
+            <h3 style="margin: 10px 0 5px 0; font-size: 0.85rem; color: var(--accent-blue);" id="adj-header">POSSIBLE BASE ADJECTIVES:</h3>
+            <div class="adj-list" id="adjectives-container">
+                <span style="font-size: 0.85rem; color: #aaa;">Select 2 or 3 items to view base adjectives!</span>
+            </div>
+
+            <button class="reset-btn" onclick="resetGame()">🔄 Reset Matchup</button>
+        </div>
+
+        <!-- PANEL 3: STARTER FORMULA PROMPT -->
+        <div class="feedback-banner">
+            <span style="color: #aaa; text-transform: uppercase; font-size: 0.85rem; font-weight: bold;">🗣️ Student Speaking Starter Formula:</span>
+            <div class="speaking-prompt" id="speaking-output">
+                "Select 2 or 3 clothing items to reveal the formula!"
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 12 Clothing Items including Baggy Jeans & Tight Jeans
+        const clothesData = [
+            { id: "baggy_jeans", name: "Baggy Jeans", icon: "👖", adjs: ["baggy", "casual", "comfortable", "long", "heavy"] },
+            { id: "tight_jeans", name: "Tight Jeans", icon: "👖", adjs: ["tight", "uncomfortable", "trendy", "long", "cheap"] },
+            { id: "coat", name: "Thick Coat", icon: "🧥", adjs: ["thick", "warm", "heavy", "expensive", "good"] },
+            { id: "tshirt", name: "Thin T-Shirt", icon: "👕", adjs: ["thin", "cool", "cheap", "light", "casual"] },
+            { id: "boots", name: "Heavy Boots", icon: "🥾", adjs: ["heavy", "thick", "durable", "expensive", "good"] },
+            { id: "sandals", name: "Sandals", icon: "🩴", adjs: ["light", "cool", "cheap", "comfortable", "casual"] },
+            { id: "sweater", name: "Warm Sweater", icon: "🧶", adjs: ["warm", "soft", "thick", "comfortable"] },
+            { id: "shorts", name: "Shorts", icon: "🩳", adjs: ["short", "cool", "casual", "light"] },
+            { id: "scarf", name: "Long Scarf", icon: "🧣", adjs: ["long", "soft", "warm", "cheap"] },
+            { id: "hoodie", name: "Trendy Hoodie", icon: "🧥", adjs: ["trendy", "comfortable", "baggy", "warm"] },
+            { id: "sneakers", name: "Sneakers", icon: "👟", adjs: ["comfortable", "trendy", "light", "good"] },
+            { id: "gloves", name: "Warm Gloves", icon: "🧤", adjs: ["warm", "small", "cheap", "heavy"] }
+        ];
+
+        let selected = [];
+
+        function renderWardrobe() {
+            const grid = document.getElementById('wardrobe-container');
+            grid.innerHTML = clothesData.map(item => `
+                <div class="item-card" id="card-${item.id}" onclick="toggleSelect('${item.id}')">
+                    <span class="icon">${item.icon}</span>
+                    <span class="name">${item.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleSelect(id) {
+            const item = clothesData.find(c => c.id === id);
+
+            if (selected.includes(item)) {
+                selected = selected.filter(c => c !== item);
+            } else {
+                if (selected.length < 3) {
+                    selected.push(item);
+                } else {
+                    selected = [selected[1], selected[2], item]; // Slide window to keep max 3
+                }
+            }
+
+            updateUI();
+        }
+
+        function updateUI() {
+            // Reset highlights
+            document.querySelectorAll('.item-card').forEach(c => {
+                c.classList.remove('selected-1', 'selected-2', 'selected-3');
+            });
+
+            // UI Elements
+            const box1 = document.getElementById('box-1');
+            const box2 = document.getElementById('box-2');
+            const box3 = document.getElementById('box-3');
+            const vs2Text = document.getElementById('vs-2-text');
+            const modeInd = document.getElementById('mode-indicator');
+            const adjContainer = document.getElementById('adjectives-container');
+            const output = document.getElementById('speaking-output');
+
+            // Box 1
+            if (selected[0]) {
+                box1.innerHTML = `<span class="icon">${selected[0].icon}</span><span class="title">${selected[0].name}</span>`;
+                document.getElementById(`card-${selected[0].id}`).classList.add('selected-1');
+            } else {
+                box1.innerHTML = `<span class="icon">❓</span><span class="title">Item 1</span>`;
+            }
+
+            // Box 2
+            if (selected[1]) {
+                box2.innerHTML = `<span class="icon">${selected[1].icon}</span><span class="title">${selected[1].name}</span>`;
+                document.getElementById(`card-${selected[1].id}`).classList.add('selected-2');
+            } else {
+                box2.innerHTML = `<span class="icon">❓</span><span class="title">Item 2</span>`;
+            }
+
+            // Box 3 (Only visible when 3 selected)
+            if (selected.length === 3) {
+                box3.style.display = "block";
+                vs2Text.style.display = "inline";
+                box3.innerHTML = `<span class="icon">${selected[2].icon}</span><span class="title">${selected[2].name}</span>`;
+                document.getElementById(`card-${selected[2].id}`).classList.add('selected-3');
+            } else {
+                box3.style.display = "none";
+                vs2Text.style.display = "none";
+            }
+
+            // Game Logic & Formula Generation
+            if (selected.length === 2) {
+                // COMPARATIVE MODE
+                modeInd.innerHTML = `<span class="mode-badge mode-comp">Comparative Mode (2 Items)</span>`;
+                adjContainer.innerHTML = selected[0].adjs.map(adj => `<span class="adj-badge">${adj}</span>`).join('');
+
+                output.innerHTML = `
+                    "The <u>${selected[0].name}</u> is/are 
+                    <span class="blank-space">[ comparative form of adjective ]</span> 
+                    than the <u>${selected[1].name}</u>!"
+                `;
+            } else if (selected.length === 3) {
+                // SUPERLATIVE MODE
+                modeInd.innerHTML = `<span class="mode-badge mode-super">Superlative Mode (3 Items)</span>`;
+                adjContainer.innerHTML = selected[0].adjs.map(adj => `<span class="adj-badge">${adj}</span>`).join('');
+
+                output.innerHTML = `
+                    "Out of these three items, the <u>${selected[0].name}</u> is/are 
+                    <span class="blank-space">[ the + superlative form of adjective ]</span> 
+                    item!"
+                `;
+            } else {
+                modeInd.innerHTML = `<span class="mode-badge" style="background:#444; color:#aaa;">Waiting for selection</span>`;
+                adjContainer.innerHTML = `<span style="font-size: 0.85rem; color: #aaa;">Select 2 or 3 items to view base adjectives!</span>`;
+                output.innerText = `"Select 2 items for Comparatives or 3 items for Superlatives!"`;
+            }
+        }
+
+        function resetGame() {
+            selected = [];
+            updateUI();
+        }
+
+        // Initialize on load
+        renderWardrobe();
+    </script>
+</body>
+</html>
